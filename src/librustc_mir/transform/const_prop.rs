@@ -203,10 +203,10 @@ impl<'b, 'a, 'tcx:'b> ConstPropagator<'b, 'a, 'tcx> {
                 };
                 // cannot use `const_eval` here, because that would require having the MIR
                 // for the current function available, but we're producing said MIR right now
-                let (value, _, ty) = self.use_ecx(source_info, |this| {
+                let (value, _, layout) = self.use_ecx(source_info, |this| {
                     eval_promoted(&mut this.ecx, cid, this.mir, this.param_env)
                 })?;
-                let val = (value, ty, c.span);
+                let val = (value, layout.ty, c.span);
                 trace!("evaluated {:?} to {:?}", c, val);
                 Some(val)
             }
@@ -221,9 +221,10 @@ impl<'b, 'a, 'tcx:'b> ConstPropagator<'b, 'a, 'tcx> {
                     trace!("field proj on {:?}", proj.base);
                     let (base, ty, span) = self.eval_place(&proj.base, source_info)?;
                     let valty = self.use_ecx(source_info, |this| {
-                        this.ecx.read_field(base, None, field, ty)
+                        let layout = this.ecx.layout_of(ty)?;
+                        this.ecx.read_field(base, None, field, layout)
                     })?;
-                    Some((valty.value, valty.ty, span))
+                    Some((valty.0, valty.1.ty, span))
                 },
                 _ => None,
             },
