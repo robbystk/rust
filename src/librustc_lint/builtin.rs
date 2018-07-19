@@ -1612,13 +1612,17 @@ fn validate_const<'a, 'tcx>(
             stacktrace: trace,
             span,
         };
-        err.report_as_error(
+        let err = err.struct_error(
             tcx.at(span),
-            &format!("this {} likely exhibits undefined behavior. \
-            The rules on what exactly is undefined behavior aren't clear, \
-            so this check might be ovezealous. Please open an issue on the rust compiler
-            repository if you believe it should not be considered undefined behavior", what),
+            &format!("this {} likely exhibits undefined behavior", what),
         );
+        if let Some(mut err) = err {
+            err.span_note(span, "The rules on what exactly is undefined behavior aren't clear, \
+                so this check might be ovezealous. Please open an issue on the rust compiler \
+                repository if you believe it should not be considered undefined behavior",
+            );
+            err.emit();
+        }
     }
 }
 

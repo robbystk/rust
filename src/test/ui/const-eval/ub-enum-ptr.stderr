@@ -1,9 +1,14 @@
-error[E0080]: this constant likely exhibits undefined behavior. The rules on what exactly is undefined behavior aren't clear, so this check might be ovezealous. Please open an issue on the rust compiler
-            repository if you believe it should not be considered undefined behavior
+error[E0080]: this constant likely exhibits undefined behavior
   --> $DIR/ub-enum-ptr.rs:23:1
    |
 LL | const BAD_ENUM: Enum = unsafe { Foo { a: &1 }.b};
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ type validation failed: encountered pointer at .TAG, but expected something in the range 0..=0
+   |
+note: The rules on what exactly is undefined behavior aren't clear, so this check might be ovezealous. Please open an issue on the rust compiler repository if you believe it should not be considered undefined behavior
+  --> $DIR/ub-enum-ptr.rs:23:1
+   |
+LL | const BAD_ENUM: Enum = unsafe { Foo { a: &1 }.b};
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: aborting due to previous error
 
