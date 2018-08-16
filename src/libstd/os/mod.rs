@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! OS-specific functionality.
+//! Provides access to features unique to specific operating systems
 
 #![stable(feature = "os", since = "1.0.0")]
 #![allow(missing_docs, bad_style, missing_debug_implementations)]
